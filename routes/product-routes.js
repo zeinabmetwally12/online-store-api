@@ -3,6 +3,8 @@ const express = require("express");
 const router = express.Router();
 
 const upload = require("../middleware/multer-middleware");
+const protect = require("../middleware/auth-middleware");
+const authorize = require("../middleware/role-middleware");
 
 const {
     getAllProducts,
@@ -16,10 +18,27 @@ router.get("/", getAllProducts);
 
 router.get("/:id", getProductById);
 
-router.post("/", upload.single("image"), createProduct);
+router.post(
+    "/",
+    protect,
+    authorize("admin"),
+    upload.single("image"),
+    createProduct
+);
 
-router.patch("/:id", upload.single("image"), updateProduct);
+router.patch(
+    "/:id",
+    protect,
+    authorize("admin"),
+    upload.single("image"),
+    updateProduct
+);
 
-router.delete("/:id", deleteProduct);
+router.delete(
+    "/:id",
+    protect,
+    authorize("admin"),
+    deleteProduct
+);
 
 module.exports = router;

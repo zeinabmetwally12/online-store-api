@@ -119,7 +119,7 @@ Uploaded images can be accessed through:
 
 `/uploads/products/<image-filename>`
 
-## Session 16 - Authentication
+## Authentication
 
 ### Authentication Features
 
@@ -161,3 +161,81 @@ Example request:
     "password": "12345678",
     "phone": "01012345678"
 }
+
+
+##Authentication & Authorization
+
+### Authentication
+
+The Online Store API uses JWT authentication and bcryptjs password hashing.
+
+### User Roles
+
+The system supports two roles:
+
+- Customer
+- Admin
+
+New users are registered as Customer by default.
+
+### User Fields
+
+Users contain:
+
+- Name
+- Email
+- Password
+- Phone
+- Role
+
+Passwords are hashed using bcryptjs before being stored in MongoDB.
+
+### Authentication Routes
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | /api/v1/auth/register | Register a new customer |
+| POST | /api/v1/auth/login | Login and receive JWT |
+| GET | /api/v1/auth/me | Protected route |
+
+### Product Authorization
+
+Public routes:
+
+- GET /api/v1/products
+- GET /api/v1/products/:id
+
+Admin-only routes:
+
+- POST /api/v1/products
+- PATCH /api/v1/products/:id
+- DELETE /api/v1/products/:id
+
+### Authorization
+
+JWT tokens are sent using:
+
+Authorization: Bearer <token>
+
+Customers cannot create, update, or delete products.
+
+Admins can manage products.
+
+### How to Run
+
+npm install
+
+Create a .env file containing:
+
+MONGODB_URI=your_mongodb_connection_string
+DB_NAME=online-store
+JWT_SECRET=your_secret
+JWT_EXPIRES_IN=7d
+
+Start the server:
+
+npm start
+
+The API runs on:
+
+http://localhost:5000
