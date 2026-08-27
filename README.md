@@ -118,3 +118,46 @@ If the product has an uploaded image, the image file is also removed.
 Uploaded images can be accessed through:
 
 `/uploads/products/<image-filename>`
+
+## Session 16 - Authentication
+
+### Authentication Features
+
+The Online Store API now includes authentication using bcryptjs and JSON Web Tokens (JWT).
+
+### User Roles
+
+The system supports two user roles:
+
+- Customer
+- Admin
+
+New users are registered as Customer by default.
+
+### User Fields
+
+Users contain:
+
+- Name
+- Email
+- Password
+- Phone
+- Role
+
+Passwords are hashed using bcryptjs before being stored in MongoDB.
+
+### Authentication Routes
+
+#### Register
+
+POST `/api/v1/auth/register`
+
+Example request:
+
+```json
+{
+    "name": "Zainab",
+    "email": "zainab@example.com",
+    "password": "12345678",
+    "phone": "01012345678"
+}
