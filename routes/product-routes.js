@@ -1,44 +1,18 @@
-const express = require("express");
+const express = require('express');
+const productController = require('../controllers/product-controller');
+const auth = require('../middleware/auth');
+const admin = require('../middleware/admin');
 
 const router = express.Router();
 
-const upload = require("../middleware/multer-middleware");
-const protect = require("../middleware/auth-middleware");
-const authorize = require("../middleware/role-middleware");
+// Public routes
+router.get('/', productController.getAllProducts);
+router.get('/:id', productController.getProductById);
 
-const {
-    getAllProducts,
-    getProductById,
-    createProduct,
-    updateProduct,
-    deleteProduct
-} = require("../controllers/product-controllers");
-
-router.get("/", getAllProducts);
-
-router.get("/:id", getProductById);
-
-router.post(
-    "/",
-    protect,
-    authorize("admin"),
-    upload.single("image"),
-    createProduct
-);
-
-router.patch(
-    "/:id",
-    protect,
-    authorize("admin"),
-    upload.single("image"),
-    updateProduct
-);
-
-router.delete(
-    "/:id",
-    protect,
-    authorize("admin"),
-    deleteProduct
-);
+// Admin routes (Use direct path matching)
+router.post('/', [auth, admin], productController.createProduct);
+router.post('/add', [auth, admin], productController.createProduct); // Handles both endpoints
+router.put('/:id', [auth, admin], productController.updateProduct);
+router.delete('/:id', [auth, admin], productController.deleteProduct);
 
 module.exports = router;

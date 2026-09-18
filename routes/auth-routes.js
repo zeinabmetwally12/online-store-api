@@ -1,24 +1,19 @@
-const express = require("express");
-
-const {
-    register,
-    login
-} = require("../controllers/auth-controllers");
-
-const protect = require("../middleware/auth-middleware");
+const express = require('express');
+const { body } = require('express-validator');
+const authController = require('../controllers/auth-controllers');
+const validate = require('../middleware/validate');
 
 const router = express.Router();
 
-router.post("/register", register);
+router.post('/register', [
+  body('name').notEmpty().withMessage('Name is required'),
+  body('email').isEmail().withMessage('Valid email is required'),
+  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
+], validate, authController.register);
 
-router.post("/login", login);
-
-router.get("/me", protect, (req, res) => {
-    res.status(200).json({
-        status: "success",
-        message: "You are authenticated",
-        user: req.user
-    });
-});
+router.post('/login', [
+  body('email').isEmail().withMessage('Valid email is required'),
+  body('password').notEmpty().withMessage('Password is required')
+], validate, authController.login);
 
 module.exports = router;
